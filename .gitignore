@@ -1,0 +1,15 @@
+# Dependencies in any subfolder
+**/node_modules/
+
+# Env files anywhere
+**/.env
+**/.env.local
+
+# Frontend build
+frontend/dist/
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
