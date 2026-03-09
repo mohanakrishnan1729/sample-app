@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 // ✅ No hardcoded localhost!
 // In dev → Vite proxy forwards to http://localhost:5000
 // In production → Nginx forwards to http://localhost:5000
-const API = '/api/tasks'
+const API = import.meta.env.VITE_API_URL  ? `${import.meta.env.VITE_API_URL}/api/tasks`  : '/api/tasks'
 
 function App() {
   const [tasks, setTasks] = useState([])
