@@ -9,40 +9,21 @@ dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 5000
 
-// ─────────────────────────────────────
-// Middleware
-// ─────────────────────────────────────
 app.use(express.json())
 
-// CORS — reads frontend URL from .env
-app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    process.env.CLIENT_URL
-  ],
-  credentials: true
-}))
+// ✅ Allow ALL origins temporarily
+app.use(cors())
 
-// ─────────────────────────────────────
-// Routes
-// ─────────────────────────────────────
-
-// Root route
 app.get('/', (req, res) => {
   res.json({ message: '🚀 Todo API is running!' })
 })
 
-// Health check
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' })
 })
 
-// Task routes
 app.use('/api/tasks', taskRoutes)
 
-// ─────────────────────────────────────
-// Connect MongoDB → Start Server
-// ─────────────────────────────────────
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
