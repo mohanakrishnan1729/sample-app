@@ -11,8 +11,21 @@ const PORT = process.env.PORT || 5000
 
 app.use(express.json())
 
-// ✅ Allow ALL origins temporarily
-app.use(cors())
+// ✅ Secure CORS using environment variable
+app.use(cors({
+  origin: function(origin, callback) {
+    const allowedOrigins = [
+      'http://localhost:5173',
+      process.env.CLIENT_URL
+    ]
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true
+}))
 
 app.get('/', (req, res) => {
   res.json({ message: '🚀 Todo API is running!' })
