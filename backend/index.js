@@ -9,26 +9,40 @@ dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 5000
 
+// ─────────────────────────────────────
 // Middleware
+// ─────────────────────────────────────
 app.use(express.json())
 
-// ⚠️ In production with Nginx, CORS is NOT needed
-// because React and Express share the same domain.
-// We only enable it for local development!
-if (process.env.NODE_ENV !== 'production') {
-  app.use(cors({ origin: 'http://localhost:5173' }))
-  console.log('🔓 CORS enabled for local development')
-}
+// CORS — reads frontend URL from .env
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    process.env.CLIENT_URL
+  ],
+  credentials: true
+}))
 
+// ─────────────────────────────────────
 // Routes
-app.use('/api/tasks', taskRoutes)
+// ─────────────────────────────────────
 
-// Health check route — Nginx uses this to verify server is alive
+// Root route
+app.get('/', (req, res) => {
+  res.json({ message: '🚀 Todo API is running!' })
+})
+
+// Health check
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' })
 })
 
-// Connect MongoDB then start server
+// Task routes
+app.use('/api/tasks', taskRoutes)
+
+// ─────────────────────────────────────
+// Connect MongoDB → Start Server
+// ─────────────────────────────────────
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
